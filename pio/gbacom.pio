@@ -1,0 +1,58 @@
+.program gbacom
+
+.define public SC_PIN 1
+.define public SO_PIN 2
+.define public SD_PIN 3
+
+.wrap_target
+;READ DATA
+    wait 0 gpio SC_PIN      ;wait SC LOW start
+    wait 1 gpio SO_PIN      ;wait SO HIGH
+    wait 0 pin 0            ;wait start bit
+
+    set x, 15 [8]           ;16 bits read counter
+read_bit:
+    in pins, 1 [6]          ;read 1 bit
+    jmp x--, read_bit
+    
+    push
+
+    pull
+    wait 0 gpio SO_PIN
+    set pindirs, 1
+
+    set x, 17 [9]
+send_bit:
+    jmp  pin, end
+    out pins, 1 [5]
+    jmp x--, send_bit
+
+    wait 1 gpio SO_PIN      ;wait SC HIGH end
+    
+end:
+    set pindirs, 0          ; set pin input
+    ;wait 1 gpio SC_PIN      ;wait SO HIGH
+
+.wrap
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+% c-sdk {
+void gbacom_program_init(PIO pio, uint sm, uint offset, uint pin, float div) {
+    gpio_init(gbacom_SD_PIN);
+    gpio_set_dir(gbacom_SD_PIN, GPIO_IN);
+    gpio_pull_up(gbacom_SD_PIN);
+
+    pio_sm_config c = gbacom_program_get_default_config(offset);
+    sm_config_set_in_pins(&c, gbacom_SD_PIN);
+    sm_config_set_out_pins(&c, gbacom_SD_PIN, 1);
+    sm_config_set_set_pins(&c, gbacom_SD_PIN, 1);
+    sm_config_set_jmp_pin(&c, gbacom_SC_PIN);
+
+    sm_config_set_clkdiv(&c, div);
+    pio_gpio_init(pio, gbacom_SD_PIN);
+
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+
+%}
