@@ -1,3 +1,5 @@
+;TODO: need improvment
+
 .program gbacom
 
 .define public SC_PIN 1
@@ -23,7 +25,7 @@ read_bit:
 
     set x, 17 [9]
 send_bit:
-    jmp  pin, end
+    jmp  pin, end           ;TODO: set start and stop bit
     out pins, 1 [5]
     jmp x--, send_bit
 

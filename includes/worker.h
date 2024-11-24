@@ -1,6 +1,8 @@
 #ifndef BWORKER_H
 #define BWORKER_H
 
+//just print things and copy memory on a separate core.
+
 static void wrk_notify_link_type();
 static void wrk_notify_block_request();
 static void wrk_notify_key_state();

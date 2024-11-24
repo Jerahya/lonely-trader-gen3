@@ -2,6 +2,7 @@
 #include "pico/multicore.h"
 #include "trade.h"
 #include "utilities.h"
+#include "shared.h"
 
 static void wrk_notify_link_type() {
     printf("Link type: ");
@@ -25,6 +26,10 @@ static void wrk_notify_link_type() {
     }
 }
 
+// static void printPID() {
+//     print_data(playerParty[0], sizeof(playerParty[0]));
+// }
+
 static void wrk_notify_block_request() {
     if (gLink.is_trading_screen) return;
     printf("Block request: ");
@@ -40,6 +45,8 @@ static void wrk_notify_block_request() {
 
         case MAILS:
             printf("Mails\n");
+            
+            // printPID();
             break;
 
         case RIBBONS:

@@ -41,6 +41,8 @@ uint16_t pio_exchange_data(uint16_t out_data) {
             }
         } else {
             //TODO: implement disconnected time out
+            //usuall get stuct here
+            //happens when talking to the trade NPC and it checks for wireless connection first
         }
     };
     pioService.timer += 1;
@@ -48,6 +50,7 @@ uint16_t pio_exchange_data(uint16_t out_data) {
 }
 
 static uint32_t pio_construct_send_data(uint16_t num) {
+    //for now we do start and stop bit here :P
     if (num == 0)
         return 0b00000000000000100000000000000000;
 

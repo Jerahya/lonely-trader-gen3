@@ -2,6 +2,13 @@
 #define LINKPROTOCOL_H
 
 #include "hardware/pio.h"
+#include <stdio.h>
+
+//handles communication with the gba in multiplayer mode
+//set custom pin in gbacom.pio
+//.define public SC_PIN 1
+//.define public SO_PIN 2
+//.define public SD_PIN 3
 
 #define CLK_DIV 1092 / 8 //found this to work fine :S
 

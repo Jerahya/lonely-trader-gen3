@@ -32,13 +32,13 @@ project(main C CXX ASM)
 pico_sdk_init()
 include_directories(includes)
 add_executable(main
-    libraries/link_protocol.c
-    libraries/queue_data.c
-    libraries/shared.c
-    libraries/trade.c
-    libraries/utilities.c
-    libraries/worker.c
-    libraries/flash_storage.c
+    codes/link_protocol.c
+    codes/queue_data.c
+    codes/shared.c
+    codes/trade.c
+    codes/utilities.c
+    codes/worker.c
+    codes/flash_storage.c
     )
 
 pico_generate_pio_header(main ${CMAKE_CURRENT_LIST_DIR}/pio/gbacom.pio OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/includes)

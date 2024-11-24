@@ -22,10 +22,7 @@ void copy_data(uint16_t *des, uint16_t *src, size_t sz) {
 }
 
 uint16_t checksum_command(const uint16_t *src, uint16_t command, uint8_t size) {
-    if (size > 8) {
-        printf("Size cannot be more than 8!");
-        return 0;
-    }
+    if (size > 8) return 0;
     
     uint16_t chksum = command;
     for (uint16_t i = 0; i < size; i++)

@@ -7,7 +7,6 @@
 #include "flash_storage.h"
 #include "pico/multicore.h"
 
-struct PokemonParty playerParty = {};
 struct LinkState gLink = {
     .Init = trd_initialize, 
     .Run = trd_run, 
@@ -203,32 +202,9 @@ static void trd_read_player_party() {
 static void trd_swap_pokemon_to_slot() {
     if (gLink.slot_selected >= 0) {
         printf("pokemon swaped to slot %d\n", gLink.slot_selected);
-        switch (gLink.slot_selected)
-        {
-            case 0:
-                memcpy(tradingParty.slot0, playerParty.slot0, sizeof(tradingParty.slot0));
-                break;
-            case 1:
-                memcpy(tradingParty.slot0, playerParty.slot1, sizeof(tradingParty.slot0));
-                break;
-            case 2:
-                memcpy(tradingParty.slot0, playerParty.slot2, sizeof(tradingParty.slot0));
-                break;
-            case 3:
-                memcpy(tradingParty.slot0, playerParty.slot3, sizeof(tradingParty.slot0));
-                break;
-            case 4:
-                memcpy(tradingParty.slot0, playerParty.slot4, sizeof(tradingParty.slot0));
-                break;
-            case 5:
-                memcpy(tradingParty.slot0, playerParty.slot5, sizeof(tradingParty.slot0));
-                break;
-            
-            default: break;
-        }
         
-        print_data((uint8_t *)&tradingParty.slot0, sizeof(tradingParty.slot0));
-        flash_save_data((uint8_t *)&tradingParty.slot0, sizeof(tradingParty.slot0));
+        memcpy(tradingParty[0], playerParty[gLink.slot_selected], sizeof(Pokemon));
+        flash_save_data((uint8_t *)&tradingParty[0], sizeof(Pokemon));
     }
 }
 
@@ -303,6 +279,7 @@ static void trd_check_callback() {
 static void trd_send_slot_select() {
     link_type_response.size = 20;
     select_slot.cmd_trade = LINKCMD_READY_TO_TRADE;
+    select_slot.slot = selected_slot;
     queue_enqueue(&gLink.q, queue_create((uint16_t *)&link_type_response, LINKCMD_INIT_BLOCK, 2, 10, NULL));
     queue_enqueue(&gLink.q, queue_create((uint16_t *)&select_slot, LINKCMD_CONT_BLOCK, link_type_response.size/2, 3, NULL));
     queue_enqueue(&gLink.q, queue_create((uint16_t *)no_data, LINKCMD_READY_EXIT_STANDBY, 1, 8, NULL));
@@ -408,8 +385,9 @@ static void trd_initialize() {
     gLink.q = queue_initialize();
     link_player_block = shd_create_link_player(LINKTYPE_TRADE_SETUP);
     trainer_card = shd_create_trainer_card();
-    shd_create_party(zigzagoon);
+    shd_create_party(zigzagoon, true);
     shd_create_dummies();
+    set_selected_slot(0);
     
     printf("initialization complete\n");
 }

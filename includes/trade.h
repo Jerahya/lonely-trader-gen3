@@ -28,8 +28,6 @@ struct LinkState {
     void (*Run)(void);
 };
 
-
-extern struct PokemonParty playerParty;
 extern struct LinkState gLink;
 
 static void trd_initialize();

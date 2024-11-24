@@ -56,10 +56,17 @@ uint16_t dummy_filler2[] = {
     0xFFFF, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0001, 0x0000, 0x0000, 0xFFFF, 0xFFFF, 0xFFFF };
 
 struct LinkPlayerBlock link_player_block = {};
-struct TrainerCard trainer_card = {};
-struct PokemonParty tradingParty = {};
+PokemonParty tradingParty;
+PokemonParty playerParty;
 struct MailDummy dummyMail = {};
 struct DummyMessage dummyMailMsg = {};
+struct TrainerCard trainer_card;
+uint8_t selected_slot = 0;
+
+
+void set_selected_slot(uint8_t slot) {
+    selected_slot = slot;
+}
 
 void shd_create_dummies() {
     memset(dummyMail.v1, 0xFFFF, sizeof(dummyMail.v1));
@@ -75,25 +82,21 @@ void shd_create_dummies() {
     memset(dummyMailMsg.filler, 0xFF, sizeof(dummyMailMsg.filler));//dummyMailMsg size is 42 but we only use 40, otherwise we'll get a checksum error
 }
 
-void shd_create_party(uint8_t first[100]) {
-    memcpy(tradingParty.slot0, first, 100);
-    if (flash_read_data((uint16_t *)tradingParty.slot0, 100)) {
+void shd_create_party(uint8_t first[100], bool loadsaved) {
+    memset(tradingParty, 0x0, sizeof(tradingParty));
+    
+    memcpy(tradingParty[0], first, sizeof(Pokemon));
+    if (loadsaved && flash_read_data((uint16_t *)tradingParty[0], sizeof(Pokemon))) {
         printf("Loaded saved pokemon\n");
     } else {
         printf("Loaded default pokemon\n");
     }
 
-    memset(tradingParty.slot1, 0x0, sizeof(tradingParty.slot1));
-    memset(tradingParty.slot2, 0x0, sizeof(tradingParty.slot2));
-    memset(tradingParty.slot3, 0x0, sizeof(tradingParty.slot3));
-    memset(tradingParty.slot4, 0x0, sizeof(tradingParty.slot4));
-    memset(tradingParty.slot5, 0x0, sizeof(tradingParty.slot5));
-    
-    tradingParty.slot1[85] = 0xFF;
-    tradingParty.slot2[85] = 0xFF;
-    tradingParty.slot3[85] = 0xFF;
-    tradingParty.slot4[85] = 0xFF;
-    tradingParty.slot5[85] = 0xFF;
+    tradingParty[1][85] = 0xFF;
+    tradingParty[2][85] = 0xFF;
+    tradingParty[3][85] = 0xFF;
+    tradingParty[4][85] = 0xFF;
+    tradingParty[5][85] = 0xFF;
 }
 
 struct LinkPlayerBlock shd_create_link_player(uint32_t linkType) {

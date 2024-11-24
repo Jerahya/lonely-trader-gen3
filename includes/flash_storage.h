@@ -1,6 +1,8 @@
 #ifndef FLASHM_H
 #define FLASHM_H
 
+//used to store traded pokemon to RP2040 flash memory
+
 #define USED_SECTOR         4
 #define USED_SECTOR_SIZE    (FLASH_SECTOR_SIZE * USED_SECTOR)
 #define USED_PAGE_COUNT     (USED_SECTOR_SIZE / FLASH_PAGE_SIZE)

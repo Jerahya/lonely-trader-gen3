@@ -39,7 +39,7 @@ struct LinkPlayerBlock
 
 struct TrainerCard
 {
-    /*0x00*/ uint8_t gender;
+    uint8_t gender;
     uint8_t stars;
     bool8 hasPokedex;
     bool8 caughtAllHoenn;
@@ -85,15 +85,9 @@ struct LinkBlockSize {
     uint16_t status;
 };
 
-struct PokemonParty {
-    uint8_t slot0[100];
-    uint8_t slot1[100];
-    uint8_t slot2[100];
-    uint8_t slot3[100];
-    uint8_t slot4[100];
-    uint8_t slot5[100];
-};
+typedef uint8_t Pokemon[100];
 
+typedef Pokemon PokemonParty[6];
 
 struct MailDummy {
     uint16_t v1[13];//0xFFFF
